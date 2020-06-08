@@ -5,9 +5,9 @@
 #include <unistd.h>  // getpid
 #define COLUMNAS 4
 #define FILAS 4
-#define ESPACIO_SIN_DESCUBRIR '?'
+#define ESPACIO_SIN_DESCUBRIR '.'
 #define ESPACIO_DESCUBIERTO ' '
-#define MINA 'M'
+#define MINA '*'
 #define CANTIDAD_MINAS 5
 #define ERROR_MINA_ENCONTRADA 1
 #define ERROR_ESPACIO_YA_DESCUBIERTO 2
@@ -99,7 +99,7 @@ void imprimirSeparadorFilas() {
   int m;
   for (m = 0; m <= COLUMNAS; m++) {
     printf("+---");
-    if (m + 2 == COLUMNAS) {
+    if (m == COLUMNAS) {
       printf("+");
     }
   }
@@ -123,7 +123,7 @@ char enteroACaracter(int numero) {
   return numero + '0';
 }
 
-void imprimirTablero(char tablero[FILAS][COLUMNAS]) {
+void imprimirTablero(char tablero[FILAS][COLUMNAS], int deberiaMostrarMinas) {
   imprimirEncabezado();
   imprimirSeparadorEncabezado();
   char letra = 'A';
@@ -143,7 +143,7 @@ void imprimirTablero(char tablero[FILAS][COLUMNAS]) {
         verdaderaLetra = enteroACaracter(minasCercanas);
       }
 
-      if (letraActual == MINA && DEBUG) {
+      if (letraActual == MINA && (DEBUG || deberiaMostrarMinas)) {
         verdaderaLetra = MINA;
       }
       printf("| %c ", verdaderaLetra);
@@ -177,12 +177,16 @@ int abrirCasilla(char filaLetra, int columna, char tablero[FILAS][COLUMNAS]) {
 
 int main() {
   char tablero[FILAS][COLUMNAS];
+  int deberiaMostrarMinas = 0;
   // Alimentar rand
   srand(getpid());
   iniciarTablero(tablero);
   colocarMinasAleatoriamente(tablero);
   while (1) {
-    imprimirTablero(tablero);
+    imprimirTablero(tablero, deberiaMostrarMinas);
+    if (deberiaMostrarMinas) {
+      break;
+    }
     int columna;
     char fila;
     printf("Ingresa la fila: ");
@@ -193,8 +197,8 @@ int main() {
     if (status == ERROR_ESPACIO_YA_DESCUBIERTO) {
       printf("Ya has abierto esta casilla\n");
     } else if (status == ERROR_MINA_ENCONTRADA) {
-      printf("Has perdido");
-      break;
+      printf("Has perdido\n");
+      deberiaMostrarMinas = 1;
     }
   }
   return 0;
