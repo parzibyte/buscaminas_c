@@ -11,8 +11,8 @@
 #include <stdio.h>
 #include <stdlib.h>  // rand
 #include <unistd.h>  // getpid
-#define COLUMNAS 4
-#define FILAS 4
+#define COLUMNAS 5
+#define FILAS 5
 #define ESPACIO_SIN_DESCUBRIR '.'
 #define ESPACIO_DESCUBIERTO ' '
 #define MINA '*'
@@ -20,7 +20,7 @@
 #define ERROR_MINA_ENCONTRADA 1
 #define ERROR_ESPACIO_YA_DESCUBIERTO 2
 #define ERROR_NINGUNO 3
-#define DEBUG 1
+#define DEBUG 0
 
 int obtenerMinasCercanas(int fila, int columna, char tablero[FILAS][COLUMNAS]) {
   int conteo = 0, filaInicio, filaFin, columnaInicio, columnaFin;
@@ -178,6 +178,20 @@ int abrirCasilla(char filaLetra, int columna, char tablero[FILAS][COLUMNAS]) {
   return ERROR_NINGUNO;
 }
 
+int noHayCasillasSinAbrir(char tablero[FILAS][COLUMNAS]) {
+  int l;
+  for (l = 0; l < FILAS; l++) {
+    int m;
+    for (m = 0; m < COLUMNAS; m++) {
+      char actual = tablero[l][m];
+      if (actual == ESPACIO_SIN_DESCUBRIR) {
+        return 0;
+      }
+    }
+  }
+  return 1;
+}
+
 int main() {
   char tablero[FILAS][COLUMNAS];
   int deberiaMostrarMinas = 0;
@@ -197,7 +211,10 @@ int main() {
     printf("Ingresa la columna: ");
     scanf("%d", &columna);
     int status = abrirCasilla(fila, columna, tablero);
-    if (status == ERROR_ESPACIO_YA_DESCUBIERTO) {
+    if (noHayCasillasSinAbrir(tablero)) {
+      printf("Has ganado\n");
+      deberiaMostrarMinas = 1;
+    } else if (status == ERROR_ESPACIO_YA_DESCUBIERTO) {
       printf("Ya has abierto esta casilla\n");
     } else if (status == ERROR_MINA_ENCONTRADA) {
       printf("Has perdido\n");
