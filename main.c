@@ -75,7 +75,7 @@ void colocarMina(int fila, int columna, char tablero[FILAS][COLUMNAS]) {
   tablero[fila][columna] = MINA;
 }
 
-void colocarMinas(char tablero[FILAS][COLUMNAS]) {
+void colocarMinasAleatoriamente(char tablero[FILAS][COLUMNAS]) {
   int l;
   for (l = 0; l < CANTIDAD_MINAS; l++) {
     int fila = aleatorio_en_rango(0, FILAS - 1);
@@ -180,26 +180,22 @@ int main() {
   // Alimentar rand
   srand(getpid());
   iniciarTablero(tablero);
-  colocarMina(1, 1, tablero);
-  colocarMina(0, 1, tablero);
-  colocarMina(1, 0, tablero);
-  abrirCasilla('A', 1, tablero);
-  abrirCasilla('A', 3, tablero);
-  abrirCasilla('A', 4, tablero);
-  abrirCasilla('B', 3, tablero);
-  abrirCasilla('B', 4, tablero);
-  abrirCasilla('C', 1, tablero);
-  abrirCasilla('C', 2, tablero);
-  abrirCasilla('C', 3, tablero);
-  abrirCasilla('C', 4, tablero);
-  abrirCasilla('D', 1, tablero);
-  abrirCasilla('D', 2, tablero);
-  abrirCasilla('D', 3, tablero);
-  abrirCasilla('D', 4, tablero);
-  imprimirTablero(tablero);
-  //   while (1) {
-  //       int fila, columna;
-  //     printf("Ingresa la columna: ")
-  //   }
+  colocarMinasAleatoriamente(tablero);
+  while (1) {
+    imprimirTablero(tablero);
+    int columna;
+    char fila;
+    printf("Ingresa la fila: ");
+    scanf(" %c", &fila);
+    printf("Ingresa la columna: ");
+    scanf("%d", &columna);
+    int status = abrirCasilla(fila, columna, tablero);
+    if (status == ERROR_ESPACIO_YA_DESCUBIERTO) {
+      printf("Ya has abierto esta casilla\n");
+    } else if (status == ERROR_MINA_ENCONTRADA) {
+      printf("Has perdido");
+      break;
+    }
+  }
   return 0;
 }
