@@ -1,3 +1,11 @@
+/*
+  Errores esperados, documentación y esas cosas...
+  - No puede haber más filas que letras del abecedario, porque solo se imprime
+  hasta la Z
+  - No puede haber más de 9 columnas porque ya no se imprimiría bien, y porque
+  ya no se convertiría correctamente el entero a cadena para mostrar las minas
+  cercanas
+*/
 #include <assert.h>
 #include <ctype.h>  // toupper
 #include <stdio.h>
@@ -38,14 +46,10 @@ int obtenerMinasCercanas(int fila, int columna, char tablero[FILAS][COLUMNAS]) {
   } else {
     columnaFin = columna + 1;
   }
-  // printf("FI: %d FF: %d CI: %d CF: %d", filaInicio, filaFin, columnaInicio,
-  //        columnaFin);
-
   int m;
   for (m = filaInicio; m <= filaFin; m++) {
     int l;
     for (l = columnaInicio; l <= columnaFin; l++) {
-      // printf("tablero[m][l]=%c\n", tablero[m][l]);
       if (tablero[m][l] == MINA) {
         conteo++;
       }
@@ -57,7 +61,7 @@ int obtenerMinasCercanas(int fila, int columna, char tablero[FILAS][COLUMNAS]) {
 // Devuelve un número aleatorio entre minimo y maximo, incluyendo a minimo y
 // maximo
 // https://parzibyte.me/blog/2019/03/21/obtener-numeros-aleatorios-c/
-int aleatorio_en_rango(int minimo, int maximo) {
+int aleatorioEnRango(int minimo, int maximo) {
   return minimo + rand() / (RAND_MAX / (maximo - minimo + 1) + 1);
 }
 
@@ -78,8 +82,8 @@ void colocarMina(int fila, int columna, char tablero[FILAS][COLUMNAS]) {
 void colocarMinasAleatoriamente(char tablero[FILAS][COLUMNAS]) {
   int l;
   for (l = 0; l < CANTIDAD_MINAS; l++) {
-    int fila = aleatorio_en_rango(0, FILAS - 1);
-    int columna = aleatorio_en_rango(0, COLUMNAS - 1);
+    int fila = aleatorioEnRango(0, FILAS - 1);
+    int columna = aleatorioEnRango(0, COLUMNAS - 1);
     colocarMina(fila, columna, tablero);
   }
 }
@@ -139,7 +143,6 @@ void imprimirTablero(char tablero[FILAS][COLUMNAS], int deberiaMostrarMinas) {
         verdaderaLetra = ESPACIO_SIN_DESCUBRIR;
       } else if (letraActual == ESPACIO_DESCUBIERTO) {
         int minasCercanas = obtenerMinasCercanas(l, m, tablero);
-        // printf("Minas: %d", minasCercanas);
         verdaderaLetra = enteroACaracter(minasCercanas);
       }
 
